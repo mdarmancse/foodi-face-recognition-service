@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package faceRecognitionPackage;
+
+service FaceRecognition {
+  rpc verify(verifyRequest) returns (StatusResponse){};
+}
+
+message Empty {}
+
+message StatusResponse {
+  bool status = 1;
+  string message = 2;
+}
+
+message verifyRequest {
+  int32 riderId = 1;
+  string verificationId = 2;
+}

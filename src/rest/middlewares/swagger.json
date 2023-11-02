@@ -1,0 +1,356 @@
+{
+  "openapi": "3.0.3",
+
+  "info": {
+    "title": "Face Recognition Service",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api-dev.foodibd.com/face-recognizer",
+      "description": "Live Server"
+    },
+    {
+      "url": "https://api-stage.foodibd.com/face-recognizer",
+      "description": "Stage Server"
+    },
+    {
+      "url": "http://18.139.92.172:5001/face-recognition",
+      "description": "Staging"
+    },
+
+    {
+      "url": "http://localhost:3355",
+      "description": "Development"
+    }
+  ],
+
+  "paths": {
+    "/upload-rider-image/{riderId}": {
+      "post": {
+        "tags": ["Upload Rider Image"],
+        "summary": "Upload a single file",
+        "parameters": [
+          {
+            "name": "riderId",
+            "in": "path",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "example": 1
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadImageResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "File not supported"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/verify-image/{riderId}": {
+      "post": {
+        "tags": ["Verify Rider Image"],
+        "summary": "Upload a single file",
+        "parameters": [
+          {
+            "name": "riderId",
+            "in": "path",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "example": 1
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Should be return verificationId",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerifyImageResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "File not supported"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+
+    "/face-recognition/settings": {
+      "get": {
+        "tags": ["Face Recognition Settings"],
+        "summary": "Get Face Recognition Settings",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SettingResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": ["Face Recognition Settings"],
+        "summary": "Update Face Recognition Settings",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FaceRecognitionSettings"
+              }
+            }
+          }
+        },
+
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SettingResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+
+  "components": {
+    "schemas": {
+      "RiderImage": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "b3b1317f-7404-44db-8ac8-c885649017ad"
+          },
+          "fileUrl": {
+            "type": "string",
+            "example": "/face-recognition/image1.jpg"
+          },
+          "riderId": {
+            "type": "integer",
+            "example": 1
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+
+      "FaceRecognitionSettings": {
+        "type": "object",
+        "properties": {
+          "faceAreaPercentage": {
+            "type": "integer",
+            "example": 10
+          },
+          "similarityPercentage": {
+            "type": "integer",
+            "example": 70
+          }
+        }
+      },
+
+      "UploadImageResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "Success"
+          },
+          "data":{
+            "type":"object",
+            "properties": {
+              "_id": {
+                "type": "string",
+                "example": "744c4627-584a-467b-89d9-a5801eabb01d"
+              },
+              "riderId": {
+                "type": "number",
+                "example": 1
+              },
+              "createdAt": {
+                "type": "string",
+                "example": "2023-09-18T05:43:50.837Z"
+              },
+              "fileUrl": {
+                "type": "string",
+                "example": "face-recognition\\d5fed19f149a4d71ad1c86a91bba9726-WhatsApp Image 2023-09-14 at 11.03.21.jpg"
+              },
+              "isActive": {
+                "type": "boolean",
+                "example": true
+              },
+
+              "updatedAt": {
+                "type": "string",
+                "example": "2023-09-18T05:43:50.837Z"
+              }
+            }
+          }
+        }
+      },
+      "VerifyImageResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "Success"
+          },
+          "data":{
+            "type":"object",
+            "properties": {
+              "verificationId": {
+                "type": "string",
+                "example": "744c4627-584a-467b-89d9-a5801eabb01d"
+              },
+              "isVerified": {
+                "type": "boolean",
+                "example": true
+              }
+            }
+          }
+        }
+      },
+      "SettingResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "Success"
+          },
+          "data":{
+            "type":"object",
+            "properties": {
+              "_id": {
+                "type": "string",
+                "example": "744c4627-584a-467b-89d9-a5801eabb01d"
+              },
+              "faceAreaPercentage": {
+                "type": "number",
+                "example": 10
+              },
+              "similarityPercentage": {
+                "type": "number",
+                "example": 70
+              },
+              "createdAt": {
+                "type": "string",
+                "example": "2023-09-18T05:43:50.837Z"
+              },
+              "updatedAt": {
+                "type": "string",
+                "example": "2023-09-18T05:43:50.837Z"
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
